@@ -1,0 +1,21 @@
+{
+    "name": "ddroche/yii2-shasta",
+    "description": "yii2 Shasta Payments Integration",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"," shasta"," payments"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dany Daniel Roche",
+            "email": "ddanielroche@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ddroche\\shasta\\": ""
+        }
+    }
+}
