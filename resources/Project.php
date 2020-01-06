@@ -8,6 +8,25 @@ use yii\httpclient\Response;
 
 class Project extends ShastaResource
 {
+    /** @var string Account where to get the temporary hold value */
+    public $default_card_payin_instant_account_id;
+    /**
+     * @var string The account where the fee is substracted. If this account has a negative balance,
+     * this amount will be a debt and your card pay in may stop working (only in live environment)
+     */
+    public $default_card_payin_fee_account_id;
+    /**
+     * @return string The percent fee applied to card pay ins
+     */
+    public $card_payin_fee;
+
+    public function rules()
+    {
+        return array_merge(parent::rules(), [
+            [['default_card_payin_instant_account_id', 'default_card_payin_fee_account_id', 'card_payin_fee'], 'string'],
+        ]);
+    }
+
     public function getResource()
     {
         return 'project';
@@ -16,19 +35,25 @@ class Project extends ShastaResource
     /**
      * Get Project
      *
-     * @return Response
+     * @return Project
      *
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function getProject()
+    public static function getProject()
     {
-        $response = $this->getRequest()
+        $resource = new static();
+        $response = $resource->getRequest()
             ->setMethod('GET')
-            ->setUrl("$this->resource")
+            ->setUrl("$resource->resource")
             ->send();
 
-        return $response;
+        if ($response->isOk) {
+            $resource->attributes = $response->data;
+            return $resource;
+        } else {
+            throw new Exception('Error Load Resource');
+        }
     }
 
     /**

@@ -22,13 +22,13 @@ or add
 to the require section of your `composer.json` file.
 
 
-Usage
------
+Configuration
+-------------
 
-Once the extension is installed, simply use it in your code by:
+Once the extension is installed, simply config it in your application:
 
 ```php
-'modules' => [
+'components' => [
     'shasta' => [
         'class' => 'ddroche\shasta\Module',
         // Develop Enviroment
@@ -39,6 +39,37 @@ Once the extension is installed, simply use it in your code by:
         'apiKey' => 'Bearer key_...',
     ],
 ]
+```
+
+Usage
+-------------
+
+```php
+$address = new Address();
+$address->line_1 = 'Avenida Omejos, 5';
+$address->line_2 = 'Atico 2a';
+$address->postal_code = '08291';
+$address->city = "L'Hospitalet de Llobregat";
+$address->region = 'Barcelona';
+$address->country = 'ES';
+
+$customer = new Customer();
+$customer->first_name = 'Javier';
+$customer->last_name = 'Hernandez';
+$customer->email_address = 'javi@example.com';
+$customer->phone_number = '123456789';
+$customer->nationality = 'ES';
+$customer->employment_status = 'self_employed';
+$customer->address = $address;
+
+/** @var Shasta $shasta */
+$shasta = \Yii::$app->get('shasta');
+if ($shasta->create($customer)) {
+    // code 
+} else {
+    // get errors
+    // $customer->getErrors();
+}
 ```
 
 Class Resources whit functions

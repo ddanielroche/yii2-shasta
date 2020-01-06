@@ -14,8 +14,6 @@ return [
     'modules' => [
         'shasta' => [
             'class' => 'ddroche\shasta\Module',
-            'apiEndPoint' => 'https://api-sandbox.payments.shasta.me/v1',
-            'apiKey' => 'Bearer key_...',
         ],
     ]
 ];
