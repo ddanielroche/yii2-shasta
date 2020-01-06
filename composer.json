@@ -1,6 +1,6 @@
 {
     "name": "ddroche/yii2-shasta",
-    "description": "yii2 Shasta Payments Integration",
+    "description": "Yii2 Shasta Payments Integration",
     "type": "yii2-extension",
     "keywords": ["yii2","extension","shasta","payments"],
     "license": "MIT",
