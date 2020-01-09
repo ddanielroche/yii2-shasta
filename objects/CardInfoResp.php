@@ -1,20 +1,19 @@
 <?php
 
-namespace ddroche\shasta\resources;
 
-use yii\base\Model;
+namespace ddroche\shasta\objects;
 
 /**
- * Class CardInfo
- * @package ddroche\shasta\resources
- * @see https://doc.payments.shasta.me/#/definitions/CardInfo
+ * Class CardInfoResp
+ * @package ddroche\shasta\objects
+ * @see https://doc.payments.shasta.me/#/definitions/CardInfoResp
  *
  * @property string $number Card number without spaces
  * @property integer $expiration_month Expiration month (1-12)
  * @property integer $expiration_year Full expiration year
- * @property string $cvv
+ * @property string $brand Card brand (visa, mastercard...)
  */
-class CardInfo extends Model
+class CardInfoResp
 {
     /** @var string Card number without spaces */
     public $number;
@@ -22,16 +21,16 @@ class CardInfo extends Model
     public $expiration_month;
     /** @var integer Full expiration year */
     public $expiration_year;
-    /** @var string */
-    public $cvv;
+    /** @var string Card brand (visa, mastercard...) */
+    public $brand;
 
     public function rules()
     {
         return [
-            [['cvv'], 'string', 'length' => [3, 4]],
             [['number'], 'string'],
             [['expiration_month',], 'integer', 'integerOnly' => true, 'min' => 1, 'max' => 12],
             [['expiration_year'], 'integer', 'integerOnly' => true, 'min' => date('Y') + 1],
+            [['brand'], 'string'],
         ];
     }
 }

@@ -4,6 +4,18 @@ namespace ddroche\shasta\resources;
 
 use yii\base\Model;
 
+/**
+ * Class Address
+ * @package ddroche\shasta\resources
+ * @see https://doc.payments.shasta.me/#/definitions/Address
+ *
+ * @property string $line_1
+ * @property string $line_2
+ * @property string $postal_code
+ * @property string $city
+ * @property string $region
+ * @property string $country
+ */
 class Address extends Model
 {
     /** @var string */

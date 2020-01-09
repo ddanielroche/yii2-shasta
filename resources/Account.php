@@ -2,6 +2,8 @@
 
 namespace ddroche\shasta\resources;
 
+use ddroche\shasta\enums\Currency;
+
 /**
  * Class Account
  * @package ddroche\shasta\resources
@@ -30,7 +32,7 @@ class Account extends ShastaResource
     {
         return array_merge(parent::rules(), [
             [['currency'], 'required', 'on' => static::SCENARIO_CREATE],
-            ['currency', 'in', 'range' => ['EUR', 'XBTC', 'XETH'], 'on' => static::SCENARIO_CREATE],
+            ['currency', 'in', 'range' => Currency::getConstantsByName(), 'on' => static::SCENARIO_CREATE],
             [['currency'], 'string', 'on' => static::SCENARIO_CREATE],
             ['allow_negative_balance', 'boolean'],
             ['allow_negative_balance', 'default', 'value' => false],

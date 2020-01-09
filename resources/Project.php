@@ -6,6 +6,15 @@ use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Response;
 
+/**
+ * Class Project
+ * @package ddroche\shasta\resources
+ * @see https://doc.payments.shasta.me/#definition-Project
+ *
+ * @property string $default_card_payin_instant_account_id
+ * @property string $default_card_payin_fee_account_id
+ * @property string $card_payin_fee
+ */
 class Project extends ShastaResource
 {
     /** @var string Account where to get the temporary hold value */
