@@ -6,7 +6,6 @@ use ddroche\shasta\resources\ShastaResource;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\Model;
 use yii\httpclient\Client;
 use Yii\httpclient\Exception;
 use yii\httpclient\Request;
@@ -202,7 +201,7 @@ class Shasta extends Component
      * @param Response $response
      * @return bool
      */
-    private function load(ShastaResource &$shastaResource, Response $response)
+    public function load(ShastaResource &$shastaResource, Response $response)
     {
         if (!$response->isOk) {
             $shastaResource->addError('Error' . $response->statusCode, $response->data);

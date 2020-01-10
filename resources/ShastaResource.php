@@ -2,6 +2,9 @@
 
 namespace ddroche\shasta\resources;
 
+use ddroche\shasta\Shasta;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 /**
@@ -39,5 +42,16 @@ abstract class ShastaResource extends Model
             [['id', 'created_at', 'project_id'], 'string', 'on' => static::SCENARIO_LOAD],
             ['meta', 'safe', 'on' => static::SCENARIO_LOAD],
         ];
+    }
+
+    /**
+     * @return Shasta
+     * @throws InvalidConfigException
+     */
+    public static function getShasta()
+    {
+        /** @var Shasta $shasta */
+        $shasta = Yii::$app->get('shasta');
+        return $shasta;
     }
 }
