@@ -32,7 +32,7 @@ class CardPayinsRefund extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/acquiring/card_payin_refunds';
     }

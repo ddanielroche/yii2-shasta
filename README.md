@@ -28,24 +28,28 @@ Configuration
 Once the extension is installed, simply config it in your application:
 
 ```php
-'components' => [
-    'shasta' => [
-        'class' => 'ddroche\shasta\Module',
-        // Develop Enviroment
-        'apiEndPoint' => 'https://api-sandbox.payments.shasta.me/v1',
-        // Production Enviroment
-        'apiEndPoint' => 'https://api.payments.shasta.me/v1',
-        // Your Production or Development Enviroment API Key
-        'apiKey' => 'Bearer key_...',
-    ],
-]
+<?php
+
+return [
+    'components' => [
+        'shasta' => [
+            'class' => 'ddroche\shasta\Shasta',
+            // Develop Enviroment
+            'apiEndPoint' => 'https://api-sandbox.payments.shasta.me/v1',
+            // Production Enviroment
+            'apiEndPoint' => 'https://api.payments.shasta.me/v1',
+            // Your Production or Development Enviroment API Key
+            'apiKey' => 'Bearer key_...',
+        ],
+    ]
+];
 ```
 
 Usage
 -------------
 
 ```php
-$address = new Address();
+$address = new ddroche\shasta\resources\Address();
 $address->line_1 = 'Avenida Omejos, 5';
 $address->line_2 = 'Atico 2a';
 $address->postal_code = '08291';
@@ -53,7 +57,7 @@ $address->city = "L'Hospitalet de Llobregat";
 $address->region = 'Barcelona';
 $address->country = 'ES';
 
-$customer = new Customer();
+$customer = new ddroche\shasta\resources\Customer();
 $customer->first_name = 'Javier';
 $customer->last_name = 'Hernandez';
 $customer->email_address = 'javi@example.com';
@@ -62,19 +66,16 @@ $customer->nationality = 'ES';
 $customer->employment_status = 'self_employed';
 $customer->address = $address;
 
-/** @var Shasta $shasta */
-$shasta = \Yii::$app->get('shasta');
-if ($shasta->create($customer)) {
-    // code 
+if ($customer->save()) {
+    // code is save
 } else {
-    // get errors
-    // $customer->getErrors();
+    // code is not save
 }
 ```
 
 Class Resources whit functions
 -----
-```php
+```
 Project (GET, SET)
 Accounts (All, Create, Read, Update)
 Transactions (All, allAccountsTransactions, Read)

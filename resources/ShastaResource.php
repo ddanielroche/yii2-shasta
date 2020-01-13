@@ -8,7 +8,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\httpclient\Client;
 use yii\httpclient\Exception;
-use yii\httpclient\Request;
 use yii\httpclient\Response;
 
 /**
@@ -18,8 +17,8 @@ use yii\httpclient\Response;
  *
  * @property string $id
  * @property string $created_at
+ * @property string $project_id
  * @property array $meta
- * @property string $resource
  */
 abstract class ShastaResource extends Model
 {
@@ -38,7 +37,7 @@ abstract class ShastaResource extends Model
     /** @var array */
     public $meta;
 
-    public abstract function getResource();
+    public abstract static function resource();
 
     public function rules()
     {
@@ -60,16 +59,18 @@ abstract class ShastaResource extends Model
     }
 
     /**
-     * @return Request
+     * @param bool $runValidation
+     * @param null $attributeNames
+     * @return bool
      * @throws InvalidConfigException
      */
-    public function createRequest()
+    public function save($runValidation = true, $attributeNames = null)
     {
-        $request = static::getShasta()->getHttpClient()
-            ->createRequest()
-            ->setFormat(Client::FORMAT_JSON);
-        $request->headers->set('Authorization', static::getShasta()->apiKey);
-        return $request;
+        if ($this->id == null) {
+            return $this->insert($runValidation, $attributeNames);
+        }
+
+        return $this->update($runValidation, $attributeNames);
     }
 
     /**
@@ -97,6 +98,7 @@ abstract class ShastaResource extends Model
 
         if ($runValidation && !$this->validate($attributes)) {
             Yii::info('Model not inserted due to validation error.', __METHOD__);
+            Yii::info($this->getErrors(), __METHOD__);
             return false;
         }
 
@@ -108,9 +110,9 @@ abstract class ShastaResource extends Model
             }
         }
 
-        $response = $this->createRequest()
+        $response = static::getShasta()->createRequest()
             ->setMethod('POST')
-            ->setUrl($this->resource)
+            ->setUrl(static::resource())
             ->setData($this->toArray($toArray))
             ->send();
 
@@ -133,6 +135,7 @@ abstract class ShastaResource extends Model
 
         if ($runValidation && !$this->validate($attributes)) {
             Yii::info('Model not updated due to validation error.', __METHOD__);
+            Yii::info($this->getErrors(), __METHOD__);
             return false;
         }
 
@@ -144,13 +147,29 @@ abstract class ShastaResource extends Model
             }
         }
 
-        $response = $this->createRequest()
+        static::resource();
+
+        $response = static::getShasta()->createRequest()
             ->setMethod('PATCH')
-            ->setUrl("$this->resource/$this->id")
+            ->setUrl(static::resource() . "/$this->id")
             ->setData($this->toArray($toArray))
             ->send();
 
         return $this->loadAttributes($response);
+    }
+
+    /**
+     * @param $condition
+     * @return ShastaResource
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public static function findOne($condition)
+    {
+        /** @var ShastaResource $object */
+        $object = new static(['id' => $condition]);
+        $object->read();
+        return $object;
     }
 
     /**
@@ -165,9 +184,9 @@ abstract class ShastaResource extends Model
             return false;
         }
 
-        $response = $this->createRequest()
+        $response = static::getShasta()->createRequest()
             ->setMethod('GET')
-            ->setUrl("$this->resource/$this->id")
+            ->setUrl(static::resource() . "/$this->id")
             ->send();
 
         return $this->loadAttributes($response);
@@ -178,23 +197,24 @@ abstract class ShastaResource extends Model
      * @return array
      * @throws InvalidConfigException
      */
-    public function readAll($condition = [])
+    public static function findAll($condition = [])
     {
-        $response = $this->createRequest()
+        $response = static::getShasta()->createRequest()
             ->setFormat(Client::FORMAT_URLENCODED)
             ->setMethod('GET')
-            ->setUrl($this->resource)
+            ->setUrl(static::resource())
             ->setData($condition)
             ->send();
 
         if (!$response->isOk) {
-            $this->addError('Error' . $response->statusCode, $response->data);
-            return [];
+            $tmp = new static();
+            $tmp->addError('Error' . $response->statusCode, $response->data);
+            return [$tmp];
         }
 
         $result = [];
         foreach ($response->data['data'] as $record) {
-            $tmp = clone $this;
+            $tmp = new static();
             $tmp->setAttributes($record);
             $result[] = $tmp;
         }
@@ -210,6 +230,7 @@ abstract class ShastaResource extends Model
     {
         if (!$response->isOk) {
             $this->addError('Error' . $response->statusCode, $response->data);
+            Yii::info($this->getErrors(), __METHOD__);
             return false;
         }
         $this->scenario = ShastaResource::SCENARIO_LOAD;

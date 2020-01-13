@@ -22,7 +22,7 @@ class CardToken extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/acquiring/card_tokens';
     }

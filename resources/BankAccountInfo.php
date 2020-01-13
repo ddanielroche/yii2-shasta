@@ -28,7 +28,7 @@ class BankAccountInfo extends ShastaResource
     }
 
 
-    public function getResource()
+    public static function resource()
     {
         return '/bank_accounts';
     }

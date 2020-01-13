@@ -45,7 +45,7 @@ class File extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/files';
     }

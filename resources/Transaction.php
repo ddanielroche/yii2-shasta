@@ -4,6 +4,7 @@ namespace ddroche\shasta\resources;
 
 use ddroche\shasta\objects\Value;
 use yii\base\InvalidConfigException;
+use yii\httpclient\Client;
 use yii\httpclient\Response;
 
 /**
@@ -43,27 +44,28 @@ class Transaction extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/transactions';
     }
 
     /**
      * List account transactions
+     * @see https://doc.payments.shasta.me/#operation--accounts--account_id--transactions-get
      *
      * @param int $limit
      * @param string $cursor
-     * @param string $account_id
      *
      * @return Response
      *
      * @throws InvalidConfigException
      */
-    public function allAccountsTransactions($limit, $cursor, $account_id)
+    public function allAccountsTransactions($limit, $cursor)
     {
-        $response = $this->getRequest()
+        $response = static::getShasta()->createRequest()
+            ->setFormat(Client::FORMAT_URLENCODED)
             ->setMethod('GET')
-            ->setUrl("/accounts/$account_id/$this->resource")
+            ->setUrl("/accounts/$this->account_id" . static::resource())
             ->setData([
                 'limit' => $limit,
                 'cursor' => $cursor,

@@ -4,11 +4,10 @@
 namespace app\controllers;
 
 use ddroche\shasta\resources\Account;
-use ddroche\shasta\resources\Card;
 use ddroche\shasta\resources\Address;
-use ddroche\shasta\resources\CardInfo;
 use ddroche\shasta\resources\Customer;
 use ddroche\shasta\Shasta;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\httpclient\Exception;
@@ -52,8 +51,20 @@ class DefaultController extends Controller
         $customer->employment_status = 'student';
         $customer->address = $address;
 
+        if ($customer->insert()) {
+            $customer->last_name = 'PEPEPEPPE';
+            print_r($customer->attributes);
+            if ($customer->update()) {
+                print_r($customer->attributes);
+            } else {
+                print_r($customer->getErrors());
+            }
+        } else {
+            print_r($customer->getErrors());
+        }
+
         /** @var Shasta $shasta */
-        $shasta = \Yii::$app->get('shasta');
+        $shasta = Yii::$app->get('shasta');
         if ($shasta->create($customer)) {
             print_r($customer->attributes);
             $customer = new Customer(['id' => $customer->id]);

@@ -29,7 +29,7 @@ class BankPayins extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/bank_payins';
     }

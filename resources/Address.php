@@ -2,6 +2,7 @@
 
 namespace ddroche\shasta\resources;
 
+use tigrov\intldata\Country;
 use yii\base\Model;
 
 /**
@@ -34,7 +35,8 @@ class Address extends Model
     public function rules()
     {
         return [
-            [['line_1', 'line_2', 'postal_code', 'city', 'region', 'country'], 'string']
+            [['line_1', 'line_2', 'postal_code', 'city', 'region', 'country'], 'string'],
+            ['country', 'in', 'range' => Country::CODES],
         ];
     }
 }

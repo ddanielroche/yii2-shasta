@@ -36,7 +36,7 @@ class Project extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return 'project';
     }
@@ -51,12 +51,12 @@ class Project extends ShastaResource
      */
     public static function getProject()
     {
-        $resource = new static();
-        $response = $resource->getRequest()
+        $response = static::getShasta()->createRequest()
             ->setMethod('GET')
-            ->setUrl("$resource->resource")
+            ->setUrl(static::resource())
             ->send();
 
+        $resource = new static();
         if ($response->isOk) {
             $resource->attributes = $response->data;
             return $resource;
@@ -76,9 +76,9 @@ class Project extends ShastaResource
      */
     public function setProject($body)
     {
-        $response = $this->getRequest()
+        $response = static::getShasta()->createRequest()
             ->setMethod('PATCH')
-            ->setUrl("$this->resource")
+            ->setUrl(static::resource())
             ->setData($body)
             ->send();
 

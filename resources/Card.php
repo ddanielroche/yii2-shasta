@@ -38,7 +38,7 @@ class Card extends ShastaResource
         }
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/acquiring/cards';
     }

@@ -31,7 +31,7 @@ class Transfer extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/transfers';
     }

@@ -2,6 +2,9 @@
 
 namespace ddroche\shasta\resources;
 
+use ddroche\shasta\enums\EmploymentStatus;
+use tigrov\intldata\Country;
+
 /**
  * Class Customer
  * @package ddroche\shasta\resources
@@ -13,7 +16,7 @@ namespace ddroche\shasta\resources;
  * @property string $phone_number
  * @property string $nationality
  * @property string $employment_status
- * @property array $address
+ * @property array|Address $address
  */
 class Customer extends ShastaResource
 {
@@ -29,7 +32,7 @@ class Customer extends ShastaResource
     public $nationality;
     /** @var string */
     public $employment_status;
-    /** @var array */
+    /** @var array|Address */
     public $address;
 
     public function rules()
@@ -37,13 +40,28 @@ class Customer extends ShastaResource
         return array_merge(parent::rules(), [
             [['first_name', 'last_name', 'email_address', 'phone_number'], 'required', 'on' => static::SCENARIO_CREATE],
             [['first_name', 'last_name', 'email_address', 'phone_number', 'nationality', 'employment_status'], 'string'],
-            [['address'], 'safe'],
-            ['employment_status', 'in', 'range' => ['student', 'employed', 'self_employed', 'searching', 'not_employed']],
             ['email_address', 'email'],
+            ['nationality', 'in', 'range' => Country::CODES],
+            ['employment_status', 'in', 'range' => EmploymentStatus::getConstantsByName()],
+            ['address', 'validateAddress'],
         ]);
     }
 
-    public function getResource()
+    public function validateAddress()
+    {
+        if (is_array($this->address)) {
+            $this->address = new Address($this->address);
+        }
+        if (!$this->address instanceof Address) {
+            $this->addError('address', 'The attribute must be an instance of Address');
+        } elseif (!$this->address->validate()) {
+            foreach ($this->address->getErrors() as $field => $error) {
+                $this->addError('address.' . $field, $error);
+            }
+        }
+    }
+
+    public static function resource()
     {
         return '/customers';
     }

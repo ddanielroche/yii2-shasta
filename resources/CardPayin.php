@@ -58,7 +58,7 @@ class CardPayin extends ShastaResource
         ]);
     }
 
-    public function getResource()
+    public static function resource()
     {
         return '/acquiring/card_payins';
     }
@@ -67,16 +67,15 @@ class CardPayin extends ShastaResource
      * Finish card verification
      * @see https://doc.payments.shasta.me/#operation--acquiring-card_verifications--card_verification_id--finish-post
      *
-     * @param $id
      * @return Response
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function finish($id)
+    public function finish()
     {
-        $response = $this->getRequest()
+        $response = static::getShasta()->createRequest()
             ->setMethod('POST')
-            ->setUrl("$this->resource/$id/finish")
+            ->setUrl(static::resource() . "/$this->id/finish")
             ->send();
 
         return $response;
