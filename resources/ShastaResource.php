@@ -37,6 +37,8 @@ abstract class ShastaResource extends Model
     /** @var array */
     public $meta;
 
+    protected $_releated;
+
     public abstract static function resource();
 
     public function rules()
@@ -159,17 +161,32 @@ abstract class ShastaResource extends Model
     }
 
     /**
-     * @param $condition
-     * @return ShastaResource
+     * @param mixed $condition primary key value or a set of column values
+     * @return static|null ShastaResource instance matching the condition, or `null` if nothing matches.
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public static function findOne($condition)
+    public static function findOne($condition = null)
     {
-        /** @var ShastaResource $object */
-        $object = new static(['id' => $condition]);
-        $object->read();
-        return $object;
+        if ($condition === null) {
+            $objects = static::findAll();
+            return count($objects) ? $objects[0] : null;
+        }
+
+        if (is_string($condition)) {
+            /** @var ShastaResource $object */
+            $object = new static(['id' => $condition]);
+
+            return $object->read() ? $object : null;
+        }
+
+        if (is_array($condition)) {
+            $object = new static($condition);
+
+            return $object->read() ? $object : null;
+        }
+
+        return null;
     }
 
     /**

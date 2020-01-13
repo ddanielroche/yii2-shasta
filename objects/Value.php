@@ -25,6 +25,7 @@ class Value extends Model
         return [
             [['currency', 'amount',], 'string'],
             ['currency', 'in', 'range' => Currency::getConstantsByName()],
+            ['amount', 'number', 'skipOnEmpty' => false],
         ];
     }
 }
