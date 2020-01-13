@@ -14,3 +14,18 @@ modules:
     config:
         Yii2:
             configFile: 'config/config-test.php'
+coverage:
+    enabled: true
+    include:
+        - config/*
+        - enums/*
+        - objects/*
+        - resources/*
+        - Shasta.php
+    exclude:
+        - .idea/*
+        - .git/*
+        - config/*
+        - controllers/*
+        - tests/*
+        - vendor/*

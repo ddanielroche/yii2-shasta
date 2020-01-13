@@ -215,6 +215,7 @@ abstract class ShastaResource extends Model
         $result = [];
         foreach ($response->data['data'] as $record) {
             $tmp = new static();
+            $tmp->scenario = ShastaResource::SCENARIO_LOAD;
             $tmp->setAttributes($record);
             $result[] = $tmp;
         }

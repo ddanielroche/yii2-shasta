@@ -3,6 +3,7 @@
 namespace ddroche\shasta\resources;
 
 use ddroche\shasta\enums\EmploymentStatus;
+use ddroche\shasta\objects\Address;
 use tigrov\intldata\Country;
 
 /**
