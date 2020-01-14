@@ -21,6 +21,7 @@ coverage:
         - enums/*
         - objects/*
         - resources/*
+        - traits/*
         - Shasta.php
     exclude:
         - .idea/*

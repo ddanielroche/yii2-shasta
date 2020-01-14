@@ -37,8 +37,6 @@ abstract class ShastaResource extends Model
     /** @var array */
     public $meta;
 
-    protected $_releated;
-
     public abstract static function resource();
 
     public function rules()

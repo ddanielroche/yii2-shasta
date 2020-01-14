@@ -2,10 +2,10 @@
 
 namespace ddroche\shasta\objects;
 
-use ddroche\shasta\resources\BankAccount;
-use yii\base\InvalidConfigException;
+use ddroche\shasta\resources\ShastaResource;
+use ddroche\shasta\traits\RelationalTrait;
+use yii\base\Exception;
 use yii\base\Model;
-use yii\httpclient\Exception;
 
 /**
  * Class Address
@@ -18,6 +18,8 @@ use yii\httpclient\Exception;
  */
 class AutoBankPayout extends Model
 {
+    use RelationalTrait;
+
     /** @var Value|array */
     public $min_balance;
     /** @var string */
@@ -31,59 +33,17 @@ class AutoBankPayout extends Model
     {
         return [
             [['bank_account_id', 'concept'], 'string'],
-            ['min_balance', 'validateBalance'],
-            ['bank_account_id', 'validateBanckAccount'],
+            [['min_balance'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => Value::class],
+            [['bank_account_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'bankAccount'],
         ];
     }
 
     /**
-     * TODO refactor to validator class
-     */
-    public function validateBalance()
-    {
-        if (is_array($this->min_balance)) {
-            $this->min_balance = new Value($this->min_balance);
-        }
-        if (!$this->min_balance instanceof Value) {
-            $this->addError('min_balance', 'The attribute must be an instance of Value');
-        } elseif (!$this->min_balance->validate()) {
-            foreach ($this->min_balance->getErrors() as $field => $error) {
-                $this->addError('min_balance.' . $field, $error);
-            }
-        }
-    }
-
-
-
-    /**
-     * Validate whit customer present y Shasta
-     *
-     * TODO refactor to validator class
-     *
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function validateBanckAccount()
-    {
-        if ($this->getBanckAccount() === null) {
-            $this->addError('bank_account_id', "Invalid bank_account_id");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * TODO refactor to relational class
-     *
-     * @throws InvalidConfigException
+     * @return ShastaResource|null
      * @throws Exception
      */
-    public function getBanckAccount()
+    public function getBankAccount()
     {
-        if (!isset($this->_releated['bank_account_id'])) {
-            $this->_releated['bank_account_id'] = BankAccount::findOne($this->bank_account_id);
-        }
-
-        return $this->_releated['bank_account_id'];
+        return $this->hasOne('ddroche\shasta\resources\BankAccount', 'bank_account_id');
     }
 }
