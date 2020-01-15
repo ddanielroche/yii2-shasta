@@ -2,11 +2,14 @@
 
 namespace ddroche\shasta;
 
+use ddroche\shasta\resources\ShastaResource;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Client;
+use Yii\httpclient\Exception;
 use yii\httpclient\Request;
+use yii\httpclient\Response;
 
 /**
  * Class Module
@@ -58,5 +61,73 @@ class Shasta extends Component
             ->setFormat(Client::FORMAT_JSON);
         $request->headers->set('Authorization', $this->apiKey);
         return $request;
+    }
+
+    /**
+     * @param ShastaResource $shastaResource
+     * @param bool $runValidation
+     * @param null $attributes
+     * @return bool
+     * @throws InvalidConfigException
+     * @deprecated
+     */
+    public function create(ShastaResource &$shastaResource, $runValidation = true, $attributes = null)
+    {
+        return $shastaResource->insert($runValidation, $attributes);
+    }
+
+    /**
+     * @param ShastaResource $shastaResource
+     * @param bool $runValidation
+     * @param null $attributes
+     * @return bool
+     * @throws InvalidConfigException
+     * @deprecated
+     */
+    public function update(ShastaResource &$shastaResource, $runValidation = true, $attributes = null)
+    {
+        return $shastaResource->update($runValidation, $attributes);
+    }
+
+    /**
+     * @param ShastaResource $shastaResource
+     * @return bool
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @deprecated
+     */
+    public function read(ShastaResource &$shastaResource)
+    {
+        return $shastaResource->read();
+    }
+
+    /**
+     * @param ShastaResource $shastaResource
+     * @param array $condition
+     * @return array
+     * @throws InvalidConfigException
+     * @deprecated
+     */
+    public function readAll(ShastaResource &$shastaResource, $condition = [])
+    {
+        return $shastaResource::findAll($condition);
+    }
+
+    /**
+     * @param ShastaResource $shastaResource
+     * @param Response $response
+     * @return bool
+     * @deprecated
+     */
+    public function load(ShastaResource &$shastaResource, Response $response)
+    {
+        if (!$response->isOk) {
+            $shastaResource->addError('Error' . $response->statusCode, $response->data);
+            return false;
+        }
+        $shastaResource->scenario = ShastaResource::SCENARIO_LOAD;
+        $shastaResource->setAttributes($response->data);
+
+        return true;
     }
 }
