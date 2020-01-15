@@ -17,10 +17,10 @@ trait RelationalTrait {
     public function hasOne($resource, $attribute)
     {
         if (!is_subclass_of($resource, ShastaResource::class)) {
-            throw new BaseException('ShastaResource class');
+            throw new BaseException("$resource is not subclass of " . ShastaResource::class);
         }
         if (!$this->hasProperty($attribute)) {
-            throw new BaseException("attribute $attribute not exit in this class");
+            throw new BaseException("$attribute not exit in $resource");
         }
         /** @var ShastaResource $resource */
         if (!isset($this->_related[$attribute])) {

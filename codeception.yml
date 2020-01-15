@@ -22,6 +22,7 @@ coverage:
         - objects/*
         - resources/*
         - traits/*
+        - validators/*
         - Shasta.php
     exclude:
         - .idea/*
