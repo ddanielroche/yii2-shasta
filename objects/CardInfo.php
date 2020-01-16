@@ -1,6 +1,6 @@
 <?php
 
-namespace ddroche\shasta\resources;
+namespace ddroche\shasta\objects;
 
 use yii\base\Model;
 

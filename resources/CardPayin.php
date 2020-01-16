@@ -3,6 +3,7 @@
 namespace ddroche\shasta\resources;
 
 use ddroche\shasta\enums\CardPayinState;
+use ddroche\shasta\objects\CardInfo;
 use ddroche\shasta\objects\Value;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;

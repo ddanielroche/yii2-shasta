@@ -2,6 +2,7 @@
 
 namespace ddroche\shasta\resources;
 
+use ddroche\shasta\objects\CardInfo;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Response;
