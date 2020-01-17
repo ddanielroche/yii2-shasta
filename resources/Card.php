@@ -17,8 +17,6 @@ use yii\base\Exception;
  * @property string $customer_id
  * @property string $card_token_id
  * @property CardInfo|CardInfoResp|array $card_info
- *
- * TODO Verification of card was declined.
  */
 class Card extends ShastaResource
 {
@@ -37,8 +35,9 @@ class Card extends ShastaResource
             [['card_token_id'], 'string', 'on' => static::SCENARIO_CREATE],
             [['card_info'], ObjectValidator::class, 'targetClass' => CardInfo::class, 'on' => static::SCENARIO_CREATE],
             [['card_info'], ObjectValidator::class, 'targetClass' => CardInfoResp::class, 'on' => static::SCENARIO_LOAD],
-            [['customer_id'], ExistValidator::class, 'targetRelation' => 'customer'],
-            ['card_info', 'validateCardInfo'],
+            ['card_info', 'validateCardInfo', 'on' => static::SCENARIO_CREATE],
+            [['customer_id'], ExistValidator::class, 'targetRelation' => 'customer', 'on' => static::SCENARIO_CREATE],
+            [['customer_id'], ExistValidator::class, 'targetRelation' => 'customer', 'on' => static::SCENARIO_LOAD],
         ]);
     }
 
