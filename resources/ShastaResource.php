@@ -39,6 +39,16 @@ abstract class ShastaResource extends Model
 
     public abstract static function resource();
 
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
+    public function getPrimaryKey($asArray = false)
+    {
+        return $asArray ? $this->getAttributes(static::primaryKey()) : $this->getAttributes(static::primaryKey())[0];
+    }
+
     public function rules()
     {
         return [

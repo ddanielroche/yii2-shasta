@@ -67,10 +67,10 @@ class CardTest extends Unit
         $attributes = [
             'customer_id' => Customer::findOne()->id,
             'card_info' => [
-                'number' => '4321432143214321',
-                'expiration_month' => 12,
-                'expiration_year' => 2021,
-                'cvv' => '987',
+                'number' => '5323601111111112',
+                'expiration_month' => 10,
+                'expiration_year' => 2030,
+                'cvv' => '123',
             ],
         ];
 
@@ -84,7 +84,8 @@ class CardTest extends Unit
         $this->assertNotNull($this->card->project_id);
 
         $card = Card::findOne($this->card->id);
-        $this->assertArrayContains($attributes, $card);
+        $this->assertEquals($attributes['card_info']['expiration_month'], $card->card_info['expiration_month']);
+        $this->assertEquals($attributes['card_info']['expiration_year'], $card->card_info['expiration_year']);
     }
 
     public function assertArrayContains($needle, $haystack)
