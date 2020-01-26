@@ -8,6 +8,9 @@ use ddroche\shasta\objects\Value;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Response;
+use ddroche\shasta\traits\RelationalTrait;
+use ddroche\shasta\validators\ExistValidator;
+use ddroche\shasta\validators\ObjectValidator;
 
 /**
  * Class CardPayin
@@ -18,6 +21,8 @@ use yii\httpclient\Response;
  */
 class CardPayin extends ShastaResource
 {
+    use RelationalTrait;
+
     /** @var string */
     public $account_id;
     /** @var Value */
@@ -54,14 +59,54 @@ class CardPayin extends ShastaResource
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['account_id', 'value', 'card_info', 'card_token_id', 'card_id', 'is_secure', 'secure_redirect_url', 'is_instant', 'instant_account_id', 'fee_account_id', ], 'required', 'on' => static::SCENARIO_CREATE],
-            ['state', 'in', 'range' => CardPayinState::getConstantsByName(), 'on' => static::SCENARIO_CREATE],
+            [['account_id', 'value', 'is_secure', 'fee_account_id', ], 'required', 'on' => static::SCENARIO_CREATE],
+            [['card_info', 'card_token_id', 'card_id'], 'validateCardInfo', 'on' => static::SCENARIO_CREATE],
+            [['card_info'], ObjectValidator::class, 'targetClass' => CardInfo::class, 'on' => static::SCENARIO_CREATE],
+            [['account_id'], ExistValidator::class, 'targetRelation' => 'account', 'on' => static::SCENARIO_CREATE],
+            ['secure_redirect_url', 'validateSecureRedirectUrl', 'on' => static::SCENARIO_CREATE],
+            ['instant_account_id', 'validateInstantAccountId', 'on' => static::SCENARIO_CREATE],
+            [['account_id'], ExistValidator::class, 'targetRelation' => 'account', 'on' => static::SCENARIO_LOAD],
+            ['state', 'in', 'range' => CardPayinState::getConstantsByName()],
         ]);
+    }
+
+    public function validateSecureRedirectUrl()
+    {
+        if($this->is_secure && !$this->secure_redirect_url){
+            $this->addError('secure_redirect_url', 'secure_redirect_url must be present');
+        }
+    }
+
+    public function validateInstantAccountId()
+    {
+        if($this->is_instant && !$this->instant_account_id){
+            $this->addError('instant_account_id', 'instant_account_id must be present');
+        }
+    }
+
+    public function validateCardInfo($attribute)
+    {
+        $counter = 0;
+        if($this->card_token_id)$counter++;
+        if($this->card_info)$counter++;
+        if($this->card_id)$counter++;
+        if ($counter == 0 || $counter > 1) {
+            $this->addError($attribute, 'Exactly one of card_id, card_token_id or card_info must be present');
+        }
     }
 
     public static function resource()
     {
         return '/acquiring/card_payins';
+    }
+
+    /**
+     * @return ShastaResource|null
+     * @throws Exception
+     */
+    public function getAccount()
+    {
+        return $this->hasOne('ddroche\shasta\resources\Account', 'account_id');
     }
 
     /**
