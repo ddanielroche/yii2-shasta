@@ -43,9 +43,9 @@ class BankPayout extends ShastaResource
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['account_id', 'bank_account_id', 'bank_account_info', 'concept', 'value'], 'required', 'on' => static::SCENARIO_CREATE],
+            [['account_id', 'concept', 'value'], 'required', 'on' => static::SCENARIO_CREATE],
             [['account_id', 'bank_account_id', 'concept', 'value'], 'string', 'on' => static::SCENARIO_CREATE],
-            [['bank_account_info'], 'safe', 'on' => static::SCENARIO_CREATE],
+            [['bank_account_id', 'bank_account_info'], 'validateBankAccount', 'on' => static::SCENARIO_CREATE],
             [['transaction_id', 'refund_transaction_id', 'miniref', 'state', ], 'safe', 'on' => static::SCENARIO_LOAD],
         ]);
     }
@@ -53,5 +53,12 @@ class BankPayout extends ShastaResource
     public static function resource()
     {
         return '/bank_payouts';
+    }
+
+    public function validateBankAccount()
+    {
+        if ($this->bank_account_id && $this->bank_account_info || !isset($this->bank_account_id) && !isset($this->bank_account_info)) {
+            $this->addError('bank_account_info', 'Exactly one of bank_account_id or bank_account_info must be present');
+        }
     }
 }
