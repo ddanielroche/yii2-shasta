@@ -4,8 +4,10 @@ namespace ddroche\shasta\tests;
 
 use Codeception\Specify;
 use Codeception\Test\Unit;
+use ddroche\shasta\enums\DocumentType;
 use ddroche\shasta\objects\Address;
 use ddroche\shasta\resources\Customer;
+use ddroche\shasta\resources\File;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 
@@ -91,6 +93,8 @@ class CustomerTest extends Unit
      */
     public function testValidationAndInsert()
     {
+        $file = File::findOne();
+
         $attributes = [
             'first_name' => 'Javier',
             'last_name' => 'Hernandez',
@@ -106,6 +110,15 @@ class CustomerTest extends Unit
                 'region' => 'Barcelona',
                 'country' => 'ES',
             ],
+            /*'identity_document' => [
+                'type' => DocumentType::NATIONAL_ID,
+                'country' => 'ES',
+                'number' => 'Y6483051D',
+                'expiration_date' => '2018-12-25T00:00:00.000Z',
+                'front_file_id' => $file->id,
+                'back_file_id' => $file->id,
+                'selfie_file_id' => $file->id,
+            ],*/
         ];
 
         $this->customer = new Customer();
