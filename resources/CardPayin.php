@@ -2,15 +2,12 @@
 
 namespace ddroche\shasta\resources;
 
-use ddroche\shasta\enums\CardPayinState;
 use ddroche\shasta\objects\CardInfo;
 use ddroche\shasta\objects\Value;
 use yii\base\InvalidConfigException;
 use yii\httpclient\Exception;
 use yii\httpclient\Response;
 use ddroche\shasta\traits\RelationalTrait;
-use ddroche\shasta\validators\ExistValidator;
-use ddroche\shasta\validators\ObjectValidator;
 
 /**
  * Class CardPayin
@@ -59,14 +56,19 @@ class CardPayin extends ShastaResource
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['account_id', 'value', 'is_secure', 'fee_account_id', ], 'required', 'on' => static::SCENARIO_CREATE],
-            [['card_info', 'card_token_id', 'card_id'], 'validateCardInfo', 'on' => static::SCENARIO_CREATE],
-            [['card_info'], ObjectValidator::class, 'targetClass' => CardInfo::class, 'on' => static::SCENARIO_CREATE],
-            [['account_id'], ExistValidator::class, 'targetRelation' => 'account', 'on' => static::SCENARIO_CREATE],
+            [['account_id', 'value'], 'required', 'on' => static::SCENARIO_CREATE],
+            [['card_info', 'card_token_id', 'card_id'], 'validateCardInfo', 'skipOnEmpty' => false, 'on' => static::SCENARIO_CREATE],
+            [['value'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => Value::class, 'on' => static::SCENARIO_CREATE],
+            [['card_info'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => CardInfo::class, 'on' => static::SCENARIO_CREATE],
+            [['account_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'account', 'on' => static::SCENARIO_CREATE],
+            [['card_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'card', 'on' => static::SCENARIO_CREATE],
+            [['card_token_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'cardToken', 'on' => static::SCENARIO_CREATE],
+            [['instant_account_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'instantAccount', 'on' => static::SCENARIO_CREATE],
+            [['is_instant', 'is_secure'], 'boolean', 'on' => static::SCENARIO_CREATE],
             ['secure_redirect_url', 'validateSecureRedirectUrl', 'on' => static::SCENARIO_CREATE],
-            ['instant_account_id', 'validateInstantAccountId', 'on' => static::SCENARIO_CREATE],
-            [['account_id'], ExistValidator::class, 'targetRelation' => 'account', 'on' => static::SCENARIO_LOAD],
-            ['state', 'in', 'range' => CardPayinState::getConstantsByName()],
+            ['instant_account_id', 'validateInstantAccountId', 'skipOnEmpty' => false, 'on' => static::SCENARIO_CREATE],
+
+            [['card_id', 'card_info', 'account_id', 'transaction_id', 'value', 'state', 'is_secure', 'secure_start_url', 'secure_redirect_url', 'is_instant', 'instant_account_id', 'instant_authorized_transaction_id', 'instant_settled_transaction_id', 'fee_account_id', 'refunded_value'], 'safe', 'on' => static::SCENARIO_LOAD],
         ]);
     }
 
@@ -77,10 +79,28 @@ class CardPayin extends ShastaResource
         }
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws \yii\base\Exception
+     */
     public function validateInstantAccountId()
     {
-        if($this->is_instant && !$this->instant_account_id){
-            $this->addError('instant_account_id', 'instant_account_id must be present');
+        if($this->is_instant) {
+            $currency = $this->getAccount()->balance['currency'];
+            $projecto = Project::getProject();
+            if(!$this->instant_account_id) {
+                if (!array_key_exists($currency, $projecto->default_card_payin_instant_account_ids)) {
+                    $this->addError('instant_account_id', 'instant_account_id must be present');
+                    return;
+                } else {
+                    $this->instant_account_id = $projecto->default_card_payin_instant_account_ids[$currency];
+                }
+            }
+            /*$balance = $this->getInstantAccount()->balance;
+            if (doubleval($this->value->amount) > doubleval($balance['amount'])) {
+                $this->addError('instant_account_id', "Not enough balance in account $this->instant_account_id: want {$this->value->amount} {$this->value->currency}, but only have {$balance['amount']} {$balance['currency']}");
+            }*/
         }
     }
 
@@ -102,11 +122,38 @@ class CardPayin extends ShastaResource
 
     /**
      * @return ShastaResource|null
-     * @throws Exception
+     * @throws \yii\base\Exception
+     */
+    public function getCard()
+    {
+        return $this->hasOne('ddroche\shasta\resources\Card', 'card_id');
+    }
+
+    /**
+     * @return ShastaResource|null
+     * @throws \yii\base\Exception
+     */
+    public function getCardToken()
+    {
+        return $this->hasOne('ddroche\shasta\resources\CardToken', 'card_token_id');
+    }
+
+    /**
+     * @return ShastaResource|null
+     * @throws \yii\base\Exception
      */
     public function getAccount()
     {
         return $this->hasOne('ddroche\shasta\resources\Account', 'account_id');
+    }
+
+    /**
+     * @return ShastaResource|null
+     * @throws \yii\base\Exception
+     */
+    public function getInstantAccount()
+    {
+        return $this->hasOne('ddroche\shasta\resources\Account', 'instant_account_id');
     }
 
     /**
