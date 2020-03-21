@@ -27,7 +27,7 @@ class BankAccountInfo extends Model
     public function rules()
     {
         return [
-            [['beneficiary_name', 'beneficiary_swift', 'beneficiary_zip_code', 'beneficiary_phone_number', 'beneficiary_email', 'iban'], 'required'],
+            [['iban'], 'required'],
             [['beneficiary_name', 'beneficiary_swift', 'beneficiary_zip_code', 'beneficiary_phone_number', 'beneficiary_email', 'iban'], 'string'],
         ];
     }
