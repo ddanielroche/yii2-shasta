@@ -19,7 +19,7 @@ use tigrov\intldata\Country;
  * @property string $nationality
  * @property string $employment_status
  * @property array|Address $address
- * @property array|IdentityDocument $identity_document
+ * @property array|IdentityDocument $document
  */
 class Customer extends ShastaResource
 {
@@ -38,7 +38,7 @@ class Customer extends ShastaResource
     /** @var array|Address */
     public $address;
     /** @var array|IdentityDocument */
-    public $identity_document;
+    public $document;
 
     public function rules()
     {
@@ -49,7 +49,7 @@ class Customer extends ShastaResource
             ['nationality', 'in', 'range' => Country::CODES],
             ['employment_status', 'in', 'range' => EmploymentStatus::getConstantsByName()],
             [['address'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => Address::class],
-            [['identity_document'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => IdentityDocument::class],
+            [['document'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => IdentityDocument::class],
         ]);
     }
 

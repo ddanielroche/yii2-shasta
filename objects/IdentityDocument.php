@@ -32,16 +32,19 @@ class IdentityDocument extends Model
     public $back_file_id;
     /** @var string */
     public $selfie_file_id;
+    /** @var string */
+    public $verification_file_id;
 
     public function rules()
     {
         return [
-            [['type', 'country', 'number', 'expiration_date', 'front_file_id', 'back_file_id', 'selfie_file_id'], 'string'],
+            [['type', 'country', 'number', 'expiration_date', 'front_file_id', 'back_file_id', 'selfie_file_id', 'verification_file_id'], 'string'],
             ['type', 'in', 'range' => DocumentType::getConstantsByName()],
             ['country', 'in', 'range' => Country::CODES],
             [['front_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'frontFile'],
             [['back_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'backFile'],
             [['selfie_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'selfieFile'],
+            [['verification_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'verificationFile'],
         ];
     }
 
@@ -70,5 +73,14 @@ class IdentityDocument extends Model
     public function getSelfieFile()
     {
         return $this->hasOne('ddroche\shasta\resources\File', 'selfie_file_id');
+    }
+
+    /**
+     * @return ShastaResource|null
+     * @throws Exception
+     */
+    public function getVerificationFile()
+    {
+        return $this->hasOne('ddroche\shasta\resources\File', 'verification_file_id');
     }
 }

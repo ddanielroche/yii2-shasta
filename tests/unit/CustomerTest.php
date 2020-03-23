@@ -110,7 +110,7 @@ class CustomerTest extends Unit
                 'region' => 'Barcelona',
                 'country' => 'ES',
             ],
-            /*'identity_document' => [
+            'document' => [
                 'type' => DocumentType::NATIONAL_ID,
                 'country' => 'ES',
                 'number' => 'Y6483051D',
@@ -118,7 +118,8 @@ class CustomerTest extends Unit
                 'front_file_id' => $file->id,
                 'back_file_id' => $file->id,
                 'selfie_file_id' => $file->id,
-            ],*/
+                'verification_file_id' => $file->id,
+            ],
         ];
 
         $this->customer = new Customer();
