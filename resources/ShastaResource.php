@@ -53,7 +53,7 @@ abstract class ShastaResource extends Model
     {
         return [
             [['id', 'created_at', 'project_id'], 'string', 'on' => static::SCENARIO_LOAD],
-            ['meta', 'safe'],
+            ['meta', 'safe', 'on' => static::SCENARIO_LOAD],
         ];
     }
 

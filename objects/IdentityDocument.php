@@ -48,6 +48,11 @@ class IdentityDocument extends Model
         ];
     }
 
+    public function fields()
+    {
+        return array_merge(parent::fields(), ['frontFile', 'backFile', 'selfieFile', 'verificationFile']);
+    }
+
     /**
      * @return ShastaResource|null
      * @throws Exception
