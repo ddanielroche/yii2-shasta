@@ -34,13 +34,13 @@ class Transaction extends ShastaResource
     public $bank_payin_id;
     /** @var string */
     public $bank_payout_id;
+    /** @var string */
+    public $card_payout_id;
 
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['account_id', 'type', 'value', 'balance_after', 'transfer_id', 'card_payin_id', 'card_payin_refund_id', 'bank_payin_id', 'bank_payout_id'], 'required', 'on' => static::SCENARIO_CREATE],
-            [['account_id', 'type', 'transfer_id', 'card_payin_id', 'card_payin_refund_id', 'bank_payin_id', 'bank_payout_id'], 'string', 'on' => static::SCENARIO_CREATE],
-            [['value', 'balance_after'], 'safe', 'on' => static::SCENARIO_CREATE],
+            [['account_id', 'type', 'value', 'balance_after', 'transfer_id', 'card_payin_id', 'card_payin_refund_id', 'bank_payin_id', 'bank_payout_id', 'card_payout_id'], 'safe', 'on' => static::SCENARIO_LOAD],
         ]);
     }
 
