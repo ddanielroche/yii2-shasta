@@ -72,7 +72,7 @@ class File extends ShastaResource
         $shasta = static::getShasta();
         $response = $shasta->createRequest()
             ->setMethod('POST')
-            ->setUrl($this->resource)
+            ->setUrl($this->resource())
             ->addFile('file', $fileName)
             ->setData($this->toArray($toArray))
             ->send();
