@@ -21,7 +21,7 @@ class IdentityDocument extends Model
 
     /** @var string Document type */
     public $type;
-    /** @var string Country */
+    /** @var string Country */ 
     public $country;
     /** @var string Document number */
     public $number;
