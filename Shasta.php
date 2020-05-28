@@ -73,11 +73,7 @@ class Shasta extends Component
      */
     public function create(ShastaResource &$shastaResource, $runValidation = true, $attributes = null)
     {
-        try{
-            return $shastaResource->insert($runValidation, $attributes);
-        } catch (Exception $e){
-            return false;
-        }
+        return $shastaResource->insert($runValidation, $attributes);
     }
 
     /**
@@ -90,11 +86,7 @@ class Shasta extends Component
      */
     public function update(ShastaResource &$shastaResource, $runValidation = true, $attributes = null)
     {
-        try{
-            return $shastaResource->update($runValidation, $attributes);
-        } catch (Exception $e){
-            return false;
-        }
+        return $shastaResource->update($runValidation, $attributes);
     }
 
     /**
@@ -106,11 +98,7 @@ class Shasta extends Component
      */
     public function read(ShastaResource &$shastaResource)
     {
-        try{
-            return $shastaResource->read();
-        } catch (Exception $e){
-            return false;
-        }
+        return $shastaResource->read();
     }
 
     /**
@@ -122,11 +110,7 @@ class Shasta extends Component
      */
     public function readAll(ShastaResource &$shastaResource, $condition = [])
     {
-        try{
-            return $shastaResource::findAll($condition);
-        } catch (Exception $e){
-            return false;
-        }
+        return $shastaResource::findAll($condition);
     }
 
     /**
@@ -137,17 +121,13 @@ class Shasta extends Component
      */
     public function load(ShastaResource &$shastaResource, Response $response)
     {
-        try{
-            if (!$response->isOk) {
-                $shastaResource->addError('Error' . $response->statusCode, $response->data);
-                return false;
-            }
-            $shastaResource->scenario = ShastaResource::SCENARIO_LOAD;
-            $shastaResource->setAttributes($response->data);
-
-            return true;
-        } catch (Exception $e){
+        if (!$response->isOk) {
+            $shastaResource->addError('Error' . $response->statusCode, $response->data);
             return false;
         }
+        $shastaResource->scenario = ShastaResource::SCENARIO_LOAD;
+        $shastaResource->setAttributes($response->data);
+
+        return true;
     }
 }

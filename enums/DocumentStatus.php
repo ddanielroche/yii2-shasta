@@ -9,12 +9,12 @@ use yii2mod\enum\helpers\BaseEnum;
  * @package ddroche\shasta\enums
  * @see https://doc.payments.shasta.me/#/definitions/Currency
  */
-class Currency extends BaseEnum
+class DocumentStatus extends BaseEnum
 {
-    const EUR = 'EUR';
-    const USD = 'USD';
-    const XBTC = 'XBTC';
-    const XETH  = 'XETH';
+    const UNVERIFIED = 'unverified';
+    const PENDING = 'pending';
+    const VERIFIED = 'verified';
+    const REFUSED  = 'refused';
 
     /**
      * @var string message category
@@ -27,9 +27,9 @@ class Currency extends BaseEnum
      * @var array
      */
     public static $list = [
-        self::EUR => 'EURO',
-        self::USD => 'USD',
-        self::XBTC => 'XBTC',
-        self::XETH => 'XETH',
+        self::UNVERIFIED => 'Unverified',
+        self::PENDING => 'Pending',
+        self::VERIFIED => 'Verified',
+        self::REFUSED => 'Refused',
     ];
 }

@@ -5,16 +5,15 @@ namespace ddroche\shasta\enums;
 use yii2mod\enum\helpers\BaseEnum;
 
 /**
- * Class Currency
+ * Class TransactionType
  * @package ddroche\shasta\enums
- * @see https://doc.payments.shasta.me/#/definitions/Currency
+ * @see https://doc.payments.shasta.me/#/definitions/CardPayin
  */
-class Currency extends BaseEnum
+class DocumentType extends BaseEnum
 {
-    const EUR = 'EUR';
-    const USD = 'USD';
-    const XBTC = 'XBTC';
-    const XETH  = 'XETH';
+    const NATIONAL_ID = 'national_id';
+    const PASSPORT = 'passport';
+    const DRIVING_LICENSE = 'driving_license';
 
     /**
      * @var string message category
@@ -27,9 +26,8 @@ class Currency extends BaseEnum
      * @var array
      */
     public static $list = [
-        self::EUR => 'EURO',
-        self::USD => 'USD',
-        self::XBTC => 'XBTC',
-        self::XETH => 'XETH',
+        self::NATIONAL_ID => 'National ID',
+        self::PASSPORT => 'Passport',
+        self::DRIVING_LICENSE => 'Driving License',
     ];
 }

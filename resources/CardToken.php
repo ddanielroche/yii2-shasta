@@ -2,6 +2,9 @@
 
 namespace ddroche\shasta\resources;
 
+use ddroche\shasta\objects\CardInfo;
+use yii\base\NotSupportedException;
+
 /**
  * Class CardToken
  * @package ddroche\shasta\resources
@@ -17,9 +20,31 @@ class CardToken extends ShastaResource
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['card_info'], 'safe', 'on' => static::SCENARIO_CREATE],
+            [['card_info'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => CardInfo::class, 'on' => static::SCENARIO_CREATE],
             [['card_info'], 'safe', 'on' => static::SCENARIO_LOAD],
         ]);
+    }
+
+    /**
+     * @param bool $runValidation
+     * @param null $attributes
+     * @return bool|void
+     * @throws NotSupportedException
+     */
+    public function update($runValidation = true, $attributes = null)
+    {
+        throw new NotSupportedException();
+    }
+
+    /**
+     * @param bool $runValidation
+     * @param null $attributes
+     * @return bool|void
+     * @throws NotSupportedException
+     */
+    public static function findAll($runValidation = true, $attributes = null)
+    {
+        throw new NotSupportedException();
     }
 
     public static function resource()

@@ -4,6 +4,7 @@ namespace ddroche\shasta\resources;
 
 use ddroche\shasta\enums\EmploymentStatus;
 use ddroche\shasta\objects\Address;
+use ddroche\shasta\objects\IdentityDocument;
 use tigrov\intldata\Country;
 
 /**
@@ -18,6 +19,7 @@ use tigrov\intldata\Country;
  * @property string $nationality
  * @property string $employment_status
  * @property array|Address $address
+ * @property array|IdentityDocument $document
  */
 class Customer extends ShastaResource
 {
@@ -35,6 +37,8 @@ class Customer extends ShastaResource
     public $employment_status;
     /** @var array|Address */
     public $address;
+    /** @var array|IdentityDocument */
+    public $document;
 
     public function rules()
     {
@@ -44,22 +48,9 @@ class Customer extends ShastaResource
             ['email_address', 'email'],
             ['nationality', 'in', 'range' => Country::CODES],
             ['employment_status', 'in', 'range' => EmploymentStatus::getConstantsByName()],
-            ['address', 'validateAddress'],
+            [['address'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => Address::class],
+            [['document'], 'ddroche\shasta\validators\ObjectValidator', 'targetClass' => IdentityDocument::class],
         ]);
-    }
-
-    public function validateAddress()
-    {
-        if (is_array($this->address)) {
-            $this->address = new Address($this->address);
-        }
-        if (!$this->address instanceof Address) {
-            $this->addError('address', 'The attribute must be an instance of Address');
-        } elseif (!$this->address->validate()) {
-            foreach ($this->address->getErrors() as $field => $error) {
-                $this->addError('address.' . $field, $error);
-            }
-        }
     }
 
     public static function resource()
