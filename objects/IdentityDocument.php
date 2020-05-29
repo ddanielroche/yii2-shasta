@@ -3,6 +3,7 @@
 namespace ddroche\shasta\objects;
 
 use ddroche\shasta\enums\DocumentType;
+use ddroche\shasta\enums\DocumentStatus;
 use ddroche\shasta\resources\ShastaResource;
 use ddroche\shasta\traits\RelationalTrait;
 use tigrov\intldata\Country;
@@ -20,10 +21,12 @@ class IdentityDocument extends Model
 
     /** @var string Document type */
     public $type;
-    /** @var string Country */
+    /** @var string Country */ 
     public $country;
     /** @var string Document number */
     public $number;
+    /** @var string Document status */
+    public $status;
     /** @var string Document Expiration Date*/
     public $expiration_date;
     /** @var string */
@@ -38,8 +41,9 @@ class IdentityDocument extends Model
     public function rules()
     {
         return [
-            [['type', 'country', 'number', 'expiration_date', 'front_file_id', 'back_file_id', 'selfie_file_id', 'verification_file_id'], 'string'],
+            [['type', 'country', 'number', 'status', 'expiration_date', 'front_file_id', 'back_file_id', 'selfie_file_id', 'verification_file_id'], 'string'],
             ['type', 'in', 'range' => DocumentType::getConstantsByName()],
+            ['status', 'in', 'range' => DocumentStatus::getConstantsByName()],
             ['country', 'in', 'range' => Country::CODES],
             [['front_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'frontFile'],
             [['back_file_id'], 'ddroche\shasta\validators\ExistValidator', 'targetRelation' => 'backFile'],
