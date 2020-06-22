@@ -18,16 +18,22 @@ class Transfer extends ShastaResource
     /** @var string */
     public $source_account_id;
     /** @var string */
+    public $source_transaction_id;
+    /** @var string */
     public $destination_account_id;
+    /** @var string */
+    public $destination_transaction_id;
     /** @var Value */
     public $value;
+
+
 
     public function rules()
     {
         return array_merge(parent::rules(), [
             [['source_account_id', 'destination_account_id', 'value'], 'required', 'on' => static::SCENARIO_CREATE],
             [['source_account_id', 'destination_account_id'], 'string', 'on' => static::SCENARIO_CREATE],
-            [['value'], 'safe', 'on' => static::SCENARIO_CREATE],
+            [['value', 'source_transaction_id', 'destination_transaction_id'], 'safe', 'on' => static::SCENARIO_CREATE],
         ]);
     }
 
